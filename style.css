@@ -1,0 +1,181 @@
+/* Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #0c0d11;
+  color: #ffffff;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Background Texture & Vignette */
+.viewport {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: 
+    radial-gradient(ellipse at center, #15161d 0%, #0c0d11 75%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
+}
+
+/* Outer Capsule Glow / Multi-Border Frame */
+.capsule-outer-glow {
+  position: relative;
+  width: 100%;
+  max-width: 630px;
+  margin: 0 24px;
+  padding: 1px;
+  border-radius: 24px;
+  background: linear-gradient(
+    135deg,
+    rgba(145, 95, 135, 0.45) 0%,
+    rgba(70, 50, 75, 0.25) 40%,
+    rgba(120, 80, 130, 0.35) 100%
+  );
+  box-shadow: 
+    0 0 0 1px rgba(120, 80, 115, 0.2),
+    0 12px 36px -8px rgba(0, 0, 0, 0.8),
+    0 0 25px -4px rgba(140, 90, 130, 0.12);
+}
+
+/* Main Capsule Container */
+.capsule-container {
+  background: #121318;
+  border-radius: 23px;
+  padding: 18px 18px 14px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Top Input Row */
+.input-row {
+  width: 100%;
+}
+
+.main-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 400;
+  color: #f1f2f5;
+  letter-spacing: -0.01em;
+}
+
+.main-input::placeholder {
+  color: #e2e4ea;
+  opacity: 0.95;
+}
+
+/* Bottom Controls Row */
+.controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.left-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Pill Buttons ("Attach files", "Deep thinking") */
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  padding: 6px 12px;
+  color: #8c8f9c;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 400;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.pill-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: #bbbfc9;
+}
+
+.pill-btn .icon {
+  color: #7b7e8c;
+  display: flex;
+  align-items: center;
+}
+
+.pill-btn .chevron-icon {
+  color: #7b7e8c;
+  margin-left: 2px;
+}
+
+/* Right Controls & Send Button */
+.right-controls {
+  display: flex;
+  align-items: center;
+}
+
+.send-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #0f1d33;
+  border: 1px solid #1d4ed8;
+  color: #3b82f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.15s ease;
+  box-shadow: 0 0 12px rgba(37, 99, 235, 0.2);
+}
+
+.send-btn:hover {
+  background: #152642;
+  border-color: #2563eb;
+  color: #60a5fa;
+  box-shadow: 0 0 16px rgba(37, 99, 235, 0.35);
+}
+
+.send-btn svg {
+  margin-left: -1px;
+  margin-top: 1px;
+}
+
+/* Watermark in bottom right */
+.watermark {
+  position: fixed;
+  bottom: 20px;
+  right: 24px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #50525d;
+  letter-spacing: -0.01em;
+  user-select: none;
+  pointer-events: none;
+}

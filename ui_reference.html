@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zen — Complete UI & Component Reference Guide</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- KaTeX for math demo -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+
+  <style>
+    /* ==========================================================================
+       ZEN DESIGN SYSTEM TOKENS
+       ========================================================================== */
+    :root {
+      --bg-viewport: #0c0d11;
+      --bg-surface: #121318;
+      --bg-surface-elevated: #161722;
+      --bg-bubble-user: #191b26;
+      --bg-bubble-assistant: #11121a;
+      --bg-card: rgba(255, 255, 255, 0.035);
+      --bg-card-hover: rgba(255, 255, 255, 0.07);
+      --bg-code: #0b0c12;
+      
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-medium: rgba(255, 255, 255, 0.14);
+      --border-glow: linear-gradient(135deg, rgba(145, 95, 135, 0.45), rgba(70, 50, 75, 0.25), rgba(120, 80, 130, 0.35));
+      
+      --text-primary: #f1f2f5;
+      --text-secondary: #9da3b4;
+      --text-muted: #6b7280;
+      --text-watermark: #50525d;
+
+      --accent-blue: #3b82f6;
+      --accent-blue-bg: #0f1d33;
+      --accent-blue-border: #1d4ed8;
+      --accent-purple: #9d5bf0;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --accent-amber: #f59e0b;
+
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-capsule: 24px;
+      --radius-full: 9999px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-viewport);
+      color: var(--text-primary);
+      line-height: 1.5;
+      display: flex;
+      background-image: 
+        radial-gradient(ellipse at 50% 10%, #171822 0%, #0c0d11 60%),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
+    }
+
+    /* Reference Page Layout with Sticky Navigation */
+    .ref-layout {
+      display: flex;
+      width: 100vw;
+      min-height: 100vh;
+    }
+
+    /* Sticky Sidebar Navigation */
+    .ref-nav {
+      width: 280px;
+      min-width: 280px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      border-right: 1px solid var(--border-subtle);
+      background: #090a0f;
+      padding: 30px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .ref-nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .ref-nav-logo {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: radial-gradient(circle at 35% 35%, #9d5bf0, #2d68f6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+    .ref-nav-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .ref-nav-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .ref-nav-header {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+    .ref-nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.82rem;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ref-nav-link:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+    }
+
+    /* Main Content */
+    .ref-main {
+      flex: 1;
+      padding: 40px 48px 120px;
+      max-width: 1060px;
+      display: flex;
+      flex-direction: column;
+      gap: 70px;
+    }
+
+    /* Header */
+    .doc-header {
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 24px;
+    }
+    .doc-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-purple);
+      background: rgba(157, 91, 240, 0.15);
+      border: 1px solid rgba(157, 91, 240, 0.3);
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      margin-bottom: 12px;
+    }
+    .doc-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    .doc-subtitle {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    /* Section Component Containers */
+    .spec-section {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      scroll-margin-top: 40px;
+    }
+    .section-title-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent-purple);
+      background: rgba(157, 91, 240, 0.1);
+      border: 1px solid rgba(157, 91, 240, 0.2);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .section-title {
+      font-size: 1.35rem;
+      font-weight: 600;
+    }
+    .section-desc {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* Preview Showcase Box */
+    .preview-box {
+      background: #0e0f15;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .preview-label {
+      position: absolute;
+      top: 12px;
+      left: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* ==========================================================================
+       SECTION 1: THE SIGNATURE HERO PROMPT CAPSULE
+       ========================================================================== */
+    .capsule-outer-glow {
+      position: relative;
+      width: 100%;
+      max-width: 630px;
+      padding: 1px;
+      border-radius: var(--radius-capsule);
+      background: var(--border-glow);
+      box-shadow: 
+        0 0 0 1px rgba(120, 80, 115, 0.2),
+        0 12px 36px -8px rgba(0, 0, 0, 0.8),
+        0 0 25px -4px rgba(140, 90, 130, 0.12);
+    }
+    .capsule-container {
+      background: var(--bg-surface);
+      border-radius: 23px;
+      padding: 18px 18px 14px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .main-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--text-primary);
+    }
+    .main-input::placeholder {
+      color: #e2e4ea;
+      opacity: 0.95;
+    }
+    .controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .left-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-full);
+      padding: 6px 12px;
+      color: #8c8f9c;
+      font-family: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .pill-btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-medium);
+      color: #bbbfc9;
+    }
+    .send-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--accent-blue-bg);
+      border: 1px solid var(--accent-blue-border);
+      color: var(--accent-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      outline: none;
+      box-shadow: 0 0 12px rgba(37, 99, 235, 0.2);
+    }
+    .stop-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #f87171;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    /* ==========================================================================
+       SECTION 2: CORE CHAT & CONTROLS SPECIMENS
+       ========================================================================== */
+    .cards-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
+      width: 100%;
+    }
+    .specimen-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .card-meta-title {
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    /* Branching and Pagination */
+    .branch-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-full);
+      padding: 3px 8px;
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+    }
+    .branch-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+    .branch-btn:hover { color: var(--text-primary); }
+
+    /* Code Block Specimen */
+    .code-box-specimen {
+      background: var(--bg-code);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+    }
+    .code-box-header {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      font-size: 0.7rem;
+    }
+    .code-box-content {
+      padding: 12px;
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
+
+    /* LaTeX Math Specimen */
+    .math-specimen {
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px dashed var(--border-subtle);
+      border-radius: var(--radius-sm);
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      color: #93c5fd;
+    }
+
+    /* Audio Playback Bar (Read Aloud) */
+    .audio-player-specimen {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-full);
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 440px;
+    }
+    .sound-equalizer {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      height: 14px;
+    }
+    .sound-bar {
+      width: 3px;
+      background: var(--accent-purple);
+      border-radius: 2px;
+      height: 10px;
+    }
+    .bar-anim-1 { height: 6px; }
+    .bar-anim-2 { height: 14px; }
+    .bar-anim-3 { height: 9px; }
+    .bar-anim-4 { height: 12px; }
+
+    /* Thumbs Rating Modal */
+    .feedback-modal-specimen {
+      background: #14151e;
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      max-width: 380px;
+    }
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    /* ==========================================================================
+       SECTION 3: MULTIMODAL CAPABILITIES SPECIMENS
+       ========================================================================== */
+    /* File Attachment Chip */
+    .attachment-chip-specimen {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #171822;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 6px 10px;
+      font-size: 0.78rem;
+    }
+    .file-icon-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 4px;
+      border-radius: 3px;
+      background: rgba(59, 130, 246, 0.2);
+      color: #93c5fd;
+    }
+
+    /* Web Search Citation Card */
+    .source-preview-card {
+      background: #141620;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      max-width: 260px;
+    }
+    .source-domain {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+    .source-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* Generated Image Card */
+    .image-gen-specimen {
+      width: 100%;
+      max-width: 440px;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: #11121a;
+    }
+    .image-canvas-mock {
+      height: 200px;
+      background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 50%, #1e293b 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .image-canvas-mock svg {
+      color: rgba(255, 255, 255, 0.2);
+    }
+    .image-caption-bar {
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0, 0, 0, 0.4);
+      font-size: 0.78rem;
+    }
+
+    /* Python Sandbox Terminal */
+    .sandbox-terminal {
+      background: #08090d;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: #94a3b8;
+      width: 100%;
+    }
+    .terminal-header {
+      color: var(--text-muted);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 4px;
+      margin-bottom: 6px;
+      font-size: 0.68rem;
+    }
+
+    /* Voice Recording Pulse Indicator */
+    .voice-pulse-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      border-radius: var(--radius-full);
+      padding: 6px 14px;
+      color: #f87171;
+      font-size: 0.78rem;
+      font-weight: 500;
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ef4444;
+      box-shadow: 0 0 8px #ef4444;
+    }
+
+    /* ==========================================================================
+       SECTION 4: CANVAS WORKSPACE SPECIMENS
+       ========================================================================== */
+    .canvas-specimen-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      width: 100%;
+      background: #090a0f;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px;
+    }
+    .canvas-col {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      font-size: 0.82rem;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .canvas-col-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .canvas-toolbar-pills {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .action-chip {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-full);
+      padding: 3px 8px;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+    }
+    .diff-add {
+      background: rgba(16, 185, 129, 0.15);
+      color: #6ee7b7;
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+    .diff-del {
+      background: rgba(239, 68, 68, 0.15);
+      color: #fca5a5;
+      text-decoration: line-through;
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+    .ask-zen-tooltip {
+      background: #1c1d28;
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-full);
+      padding: 4px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.74rem;
+      color: var(--text-primary);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+    }
+
+    /* ==========================================================================
+       SECTION 5: CHAT HISTORY & ORGANIZATION SPECIMENS
+       ========================================================================== */
+    .sidebar-mockup {
+      width: 100%;
+      max-width: 320px;
+      background: #090a0f;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .sidebar-search-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 6px 10px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+    .pinned-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 8px;
+      border-radius: var(--radius-sm);
+      background: rgba(157, 91, 240, 0.08);
+      border: 1px solid rgba(157, 91, 240, 0.2);
+      font-size: 0.8rem;
+      color: #d8b4fe;
+    }
+    .project-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      border-radius: var(--radius-sm);
+    }
+    .temp-chat-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #fcd34d;
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+    }
+    .share-modal-mockup {
+      width: 100%;
+      max-width: 420px;
+      background: #13141d;
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .share-link-input-row {
+      display: flex;
+      gap: 6px;
+    }
+    .share-link-input {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 6px 10px;
+      font-size: 0.78rem;
+      color: var(--text-primary);
+      outline: none;
+    }
+    .btn-copy-sm {
+      background: var(--accent-blue);
+      border: none;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ref-layout">
+    
+    <!-- Sticky Navigation Sidebar -->
+    <aside class="ref-nav">
+      <div class="ref-nav-brand">
+        <div class="ref-nav-logo">Z</div>
+        <div class="ref-nav-title">Zen UI Reference</div>
+      </div>
+
+      <div class="ref-nav-group">
+        <div class="ref-nav-header">Overview</div>
+        <a href="#hero-capsule" class="ref-nav-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+          Hero Input Capsule
+        </a>
+        <a href="#design-tokens" class="ref-nav-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
+          Design Tokens & Palette
+        </a>
+      </div>
+
+      <div class="ref-nav-group">
+        <div class="ref-nav-header">Section 2: Core Chat</div>
+        <a href="#models-specimen" class="ref-nav-link">Model Selector & Badges</a>
+        <a href="#chat-stream" class="ref-nav-link">Message Stream & Bubbles</a>
+        <a href="#code-latex" class="ref-nav-link">Code Blocks & LaTeX Math</a>
+        <a href="#audio-feedback" class="ref-nav-link">Audio Player & Feedback</a>
+      </div>
+
+      <div class="ref-nav-group">
+        <div class="ref-nav-header">Section 3: Multimodal</div>
+        <a href="#attachments-preview" class="ref-nav-link">File Ingestion & Citations</a>
+        <a href="#image-gen-code" class="ref-nav-link">Image Gen & Sandbox Code</a>
+        <a href="#voice-dictation" class="ref-nav-link">Voice Dictation Pulse</a>
+      </div>
+
+      <div class="ref-nav-group">
+        <div class="ref-nav-header">Section 4: Canvas</div>
+        <a href="#canvas-dual-pane" class="ref-nav-link">Dual-Pane & Diff Viewer</a>
+        <a href="#ask-zen-action" class="ref-nav-link">Inline "Ask Zen" & Actions</a>
+      </div>
+
+      <div class="ref-nav-group">
+        <div class="ref-nav-header">Section 5: Organization</div>
+        <a href="#history-sidebar" class="ref-nav-link">History, Search & Pinned</a>
+        <a href="#share-export" class="ref-nav-link">Share Link & Export Data</a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="ref-main">
+      
+      <header class="doc-header">
+        <div class="doc-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Complete Project UI Specification
+        </div>
+        <h1 class="doc-title">Zen Web UI & Component Reference</h1>
+        <p class="doc-subtitle">All visual specifications, interactive components, tokens, and functional states derived directly from the Implementation Plan.</p>
+      </header>
+
+      <!-- ==========================================================================
+           1. HERO PROMPT CAPSULE (EXACT IMAGE REPRODUCTION)
+           ========================================================================== -->
+      <section id="hero-capsule" class="spec-section">
+        <div class="section-title-bar">
+          <span class="section-num">01</span>
+          <h2 class="section-title">The Floating Prompt Capsule (Core Hero Element)</h2>
+        </div>
+        <p class="section-desc">Exact reproduction of the reference visual benchmark. Features a floating container with multi-layered specular perimeter glow, frameless prompt input, attach pill, deep thinking selector, and circular send trigger.</p>
+        
+        <div class="preview-box">
+          <span class="preview-label">LIVE HERO SPECIMEN</span>
+          
+          <div class="capsule-outer-glow">
+            <div class="capsule-container">
+              <div class="input-row">
+                <input type="text" class="main-input" placeholder="How can I help you?" value="" />
+              </div>
+              <div class="controls-row">
+                <div class="left-controls">
+                  <!-- Attach Button -->
+                  <button class="pill-btn" type="button">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path>
+                      <path d="M12 12v9"></path>
+                      <path d="m8 16 4-4 4 4"></path>
+                    </svg>
+                    <span>Attach files</span>
+                  </button>
+
+                  <!-- Deep Thinking Button -->
+                  <button class="pill-btn" type="button">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+                      <path d="M2 12h20"></path>
+                    </svg>
+                    <span>Deep thinking</span>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="m6 9 6 6 6-9"></path>
+                    </svg>
+                  </button>
+                </div>
+
+                <div class="right-controls">
+                  <button class="send-btn" type="button" aria-label="Send">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="22" y1="2" x2="11" y2="13"></line>
+                      <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           2. DESIGN TOKENS
+           ========================================================================== -->
+      <section id="design-tokens" class="spec-section">
+        <div class="section-title-bar">
+          <span class="section-num">02</span>
+          <h2 class="section-title">Design Tokens & Palette Swatches</h2>
+        </div>
+        <p class="section-desc">Unified design tokens defining the dark minimalist luxury theme.</p>
+        
+        <div class="cards-grid-2">
+          <div class="specimen-card">
+            <div class="card-meta-title">Surfaces & Backgrounds</div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <div style="background: #0c0d11; border: 1px solid var(--border-subtle); padding: 8px 12px; border-radius: 6px; font-size: 0.75rem;">Viewport #0c0d11</div>
+              <div style="background: #121318; border: 1px solid var(--border-subtle); padding: 8px 12px; border-radius: 6px; font-size: 0.75rem;">Capsule #121318</div>
+              <div style="background: #191b26; border: 1px solid var(--border-subtle); padding: 8px 12px; border-radius: 6px; font-size: 0.75rem;">User Bubble #191b26</div>
+              <div style="background: #0b0c12; border: 1px solid var(--border-subtle); padding: 8px 12px; border-radius: 6px; font-size: 0.75rem;">Code Canvas #0b0c12</div>
+            </div>
+          </div>
+
+          <div class="specimen-card">
+            <div class="card-meta-title">Accent Colors & Specular Glows</div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <div style="background: #0f1d33; border: 1px solid #1d4ed8; color: #3b82f6; padding: 8px 12px; border-radius: 6px; font-size: 0.75rem;">Electric Blue #3b82f6</div>
+              <div style="background: rgba(157, 91, 240, 0.15); border: 1px solid rgba(157, 91, 240, 0.3); color: #c084fc; padding: 8px 12px; border-radius: 6px; font-size: 0.75rem;">Reasoning Violet #9d5bf0</div>
+              <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #6ee7b7; padding: 8px 12px; border-radius: 6px; font-size: 0.75rem;">Success Green #10b981</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           3. CORE CHAT & CONTROLS SPECIMENS (PLAN SEC. 2)
+           ========================================================================== -->
+      <section id="models-specimen" class="spec-section">
+        <div class="section-title-bar">
+          <span class="section-num">03</span>
+          <h2 class="section-title">Model Selector & Reasoning Hierarchy (Spec 2.1)</h2>
+        </div>
+        <p class="section-desc">Tiered capability selectors with distinct performance indicators.</p>
+
+        <div class="preview-box">
+          <div style="display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 440px;">
+            <!-- Deep thinking -->
+            <div style="display: flex; align-items: center; gap: 12px; background: rgba(157, 91, 240, 0.08); border: 1px solid rgba(157, 91, 240, 0.3); padding: 12px 14px; border-radius: 12px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#bf8eff" stroke-width="1.8">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+                <path d="M2 12h20"></path>
+              </svg>
+              <div>
+                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
+                  <span style="font-size: 0.86rem; font-weight: 600;">Deep thinking</span>
+                  <span style="font-size: 0.65rem; font-weight: 600; padding: 1px 6px; border-radius: 4px; background: rgba(157, 91, 240, 0.2); color: #d0a7ff;">Reasoning • Zen-R1</span>
+                </div>
+                <div style="font-size: 0.74rem; color: var(--text-muted);">Multi-step mathematical proof & deep coding</div>
+              </div>
+            </div>
+
+            <!-- Zen Ultra -->
+            <div style="display: flex; align-items: center; gap: 12px; background: var(--bg-surface); border: 1px solid var(--border-subtle); padding: 12px 14px; border-radius: 12px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#93c5fd" stroke-width="1.8">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+              </svg>
+              <div>
+                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
+                  <span style="font-size: 0.86rem; font-weight: 600;">Zen Ultra</span>
+                  <span style="font-size: 0.65rem; font-weight: 600; padding: 1px 6px; border-radius: 4px; background: rgba(59, 130, 246, 0.2); color: #93c5fd;">Creative • 4.5</span>
+                </div>
+                <div style="font-size: 0.74rem; color: var(--text-muted);">Long-form creative synthesis & multimodal intelligence</div>
+              </div>
+            </div>
+
+            <!-- Zen Flash -->
+            <div style="display: flex; align-items: center; gap: 12px; background: var(--bg-surface); border: 1px solid var(--border-subtle); padding: 12px 14px; border-radius: 12px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="1.8">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+              <div>
+                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
+                  <span style="font-size: 0.86rem; font-weight: 600;">Zen Flash</span>
+                  <span style="font-size: 0.65rem; font-weight: 600; padding: 1px 6px; border-radius: 4px; background: rgba(16, 185, 129, 0.2); color: #6ee7b7;">Low-Latency</span>
+                </div>
+                <div style="font-size: 0.74rem; color: var(--text-muted);">Instantaneous responses for daily queries</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Message Stream & Branching -->
+      <section id="chat-stream" class="spec-section">
+        <div class="section-title-bar">
+          <span class="section-num">04</span>
+          <h2 class="section-title">Message Stream, Branching & Stop State (Spec 2.2, 2.3)</h2>
+        </div>
+        <p class="section-desc">User bubble, streaming avatar orb, branch pagination navigation, and stop generation trigger.</p>
+
+        <div class="preview-box">
+          <div style="display: flex; flex-direction: column; gap: 18px; width: 100%; max-width: 680px;">
+            
+            <!-- User Bubble with Edit Action -->
+            <div style="align-self: flex-end; background: #191b26; border: 1px solid var(--border-subtle); border-radius: 18px 18px 4px 18px; padding: 12px 16px; font-size: 0.9rem; max-width: 80%; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+              <span>Implement a quantum search benchmark in Python.</span>
+              <button style="background: none; border: none; color: var(--text-muted); cursor: pointer;" title="Edit Prompt">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+              </button>
+            </div>
+
+            <!-- Assistant Stream -->
+            <div style="display: flex; gap: 14px; width: 100%;">
+              <div style="width: 30px; height: 30px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #9d5bf0, #2d68f6); box-shadow: 0 0 12px rgba(157, 91, 240, 0.35); flex-shrink: 0;"></div>
+              <div style="flex: 1; font-size: 0.9rem; line-height: 1.6; color: #e4e7ee;">
+                <p style="margin-bottom: 8px;">Here is the optimized quantum oracle state amplification routine:</p>
+                
+                <div class="code-box-specimen">
+                  <div class="code-box-header">
+                    <span>PYTHON</span>
+                    <button style="background: none; border: none; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; gap: 4px; font-size: 0.7rem;">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                      Copy Code
+                    </button>
+                  </div>
+                  <pre class="code-box-content"><code>def grover_iteration(state, oracle_matrix):
+    # Apply oracle and diffusion operator
+    return diffusion_matrix @ (oracle_matrix @ state)</code></pre>
+                </div>
+
+                <!-- Branch Pagination -->
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;">
+                  <div class="branch-pill">
+                    <button class="branch-btn" title="Previous branch">&lt;</button>
+                    <span>Branch 1 / 2</span>
+                    <button class="branch-btn" title="Next branch">&gt;</button>
+                  </div>
+
+                  <!-- Action Buttons -->
+                  <div style="display: flex; gap: 8px;">
+                    <button style="background: none; border: none; color: var(--text-muted); cursor: pointer;" title="Read Aloud">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                    </button>
+                    <button style="background: none; border: none; color: var(--text-muted); cursor: pointer;" title="Regenerate">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                    </button>
+                    <button style="background: none; border: none; color: var(--text-muted); cursor: pointer;" title="Good response">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Code & LaTeX -->
+      <section id="code-latex" class="spec-section">
+        <div class="section-title-bar">
+          <span class="section-num">05</span>
+          <h2 class="section-title">LaTeX Formulas & Stop State (Spec 2.2)</h2>
+        </div>
+        
+        <div class="cards-grid-2">
+          <div class="specimen-card">
+            <div class="card-meta-title">LaTeX Equations</div>
+            <div class="math-specimen">
+              $$\mathcal{H} = -\sum_{i} J_{ij}\sigma_i^z\sigma_j^z - \Gamma\sum_{i}\sigma_i^x$$
+            </div>
+          </div>
+          <div class="specimen-card">
+            <div class="card-meta-title">Streaming Stop Button</div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <button class="stop-btn">
+                <rect width="10" height="10" fill="currentColor" rx="2"></rect>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+              </button>
+              <span style="font-size: 0.8rem; color: var(--text-secondary);">Clicking immediately halts model streaming generation.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Audio & Feedback -->
+      <section id="audio-feedback" class="spec-section">
+        <div class="section-title-bar">
+          <span class="section-num">06</span>
+          <h2 class="section-title">Audio Player & Thumbs Feedback Modal (Spec 2.5, 2.6)</h2>
+        </div>
+
+        <div class="cards-grid-2">
+          <div class="specimen-card">
+            <div class="card-meta-title">Audio Playback Visualizer (Read Aloud)</div>
+            <div class="audio-player-specimen">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div class="sound-equalizer">
+                  <span class="sound-bar bar-anim-1"></span>
+                  <span class="sound-bar bar-anim-2"></span>
+                  <span class="sound-bar bar-anim-3"></span>
+                  <span class="sound-bar bar-anim-4"></span>
+                </div>
+                <span style="font-size: 0.78rem; font-weight: 600;">Zen Voice</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="background: rgba(255, 255, 255, 0.08); padding: 2px 6px; border-radius: 4px; font-size: 0.7rem;">1.25x</span>
+                <button style="background: none; border: none; color: var(--text-muted); cursor: pointer;">&times;</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="specimen-card">
+            <div class="card-meta-title">Granular Negative Feedback Modal</div>
+            <div class="feedback-modal-specimen">
+              <div style="font-size: 0.82rem; font-weight: 600;">What was wrong with this response?</div>
+              <label class="checkbox-row"><input type="checkbox" checked> Factually incorrect</label>
+              <label class="checkbox-row"><input type="checkbox"> Did not follow instructions</label>
+              <label class="checkbox-row"><input type="checkbox"> Code had errors / didn't compile</label>
+              <button class="btn-copy-sm" style="align-self: flex-end; padding: 4px 10px;">Submit Feedback</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           4. MULTIMODAL TOOLS (PLAN SEC. 3)
+           ========================================================================== -->
+      <section id="attachments-preview" class="spec-section">
+        <div class="section-title-bar">
+          <span class="section-num">07</span>
+          <h2 class="section-title">File Ingestion & Live Web Citations (Spec 3.1, 3.2)</h2>
+        </div>
+
+        <div class="cards-grid-2">
+          <div class="specimen-card">
+            <div class="card-meta-title">Attached File Chips in Prompt Capsule</div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <div class="attachment-chip-specimen">
+                <span class="file-icon-badge">PDF</span>
+                <span>q3_financial_model.pdf</span>
+                <span style="color: var(--text-muted); cursor: pointer;">&times;</span>
+              </div>
+              <div class="attachment-chip-specimen">
+                <span class="file-icon-badge" style="background: rgba(16, 185, 129, 0.2); color: #6ee7b7;">CSV</span>
+                <span>sales_telemetry.csv</span>
+                <span style="color: var(--text-muted); cursor: pointer;">&times;</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="specimen-card">
+            <div class="card-meta-title">Live Web Search Citation Card</div>
+            <div class="source-preview-card">
+              <span class="source-domain">arxiv.org • Quantum Computing</span>
+              <span class="source-title">Quadratic Speedups in High-Dimensional Search Oracles</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="image-gen-code" class="spec-section">
+        <div class="section-title-bar">
+          <span class="section-num">08</span>
+          <h2 class="section-title">In-Chat Image Gen & Sandboxed Python Code (Spec 3.4, 3.5)</h2>
+        </div>
+
+        <div class="cards-grid-2">
+          <div class="specimen-card">
+            <div class="card-meta-title">Generated Artwork Card with Iteration Trigger</div>
+            <div class="image-gen-specimen">
+              <div class="image-canvas-mock">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </div>
+              <div class="image-caption-bar">
+                <span style="color: var(--text-secondary);">"Futuristic solar research citadel..."</span>
+                <button class="btn-copy-sm" style="padding: 2px 8px; font-size: 0.7rem;">Download</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="specimen-card">
+            <div class="card-meta-title">Sandboxed Code Execution Terminal</div>
+            <div class="sandbox-terminal">
+              <div class="terminal-header">SANDBOX PYTHON RUNNER • STDOUT</div>
+              <div>[INFO] Reading dataset sales_telemetry.csv (10,000 rows)</div>
+              <div>[OK] Regression loss converged to 0.0142 in 18 iterations</div>
+              <div style="color: #6ee7b7; margin-top: 4px;">✓ Chart output saved: telemetry_plot.svg</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="voice-dictation" class="spec-section">
+        <div class="section-title-bar">
+          <span class="section-num">09</span>
+          <h2 class="section-title">Voice Dictation Pulse Indicator (Spec 3.6)</h2>
+        </div>
+        <div class="preview-box">
+          <div class="voice-pulse-btn">
+            <span class="pulse-dot"></span>
+            <span>Listening... Speech dictation active</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           5. CANVAS & INTERACTIVE WORKSPACE (PLAN SEC. 4)
+           ========================================================================== -->
+      <section id="canvas-dual-pane" class="spec-section">
+        <div class="section-title-bar">
+          <span class="section-num">10</span>
+          <h2 class="section-title">Canvas Dual-Pane & Version Diff View (Spec 4.1, 4.6)</h2>
+        </div>
+        <p class="section-desc">Side-by-side workspace with independent scrolling, code/document mode switch, and granular diff audits.</p>
+
+        <div class="canvas-specimen-layout">
+          <div class="canvas-col">
+            <div class="canvas-col-title">Left Pane: Conversational Stream</div>
+            <p style="color: var(--text-secondary);">User: Update the database connection pool to handle reconnect exponential backoff.</p>
+            <p style="color: #c084fc;">Zen: I've updated the database adapter in your Canvas document.</p>
+          </div>
+
+          <div class="canvas-col">
+            <div class="canvas-col-title">Right Pane: Canvas Workspace (Diff Mode)</div>
+            <div class="canvas-toolbar-pills">
+              <span class="action-chip">v2 of 2</span>
+              <span class="action-chip">Add Polish</span>
+              <span class="action-chip">Fix Bugs</span>
+              <span class="action-chip">Add Logs</span>
+            </div>
+            <pre style="font-family: 'JetBrains Mono', monospace; font-size: 0.74rem; line-height: 1.5; color: #d1d5db;">
+<span class="diff-del">- def connect_db():</span>
+<span class="diff-add">+ async def connect_db_with_backoff(max_retries=5):</span>
+<span class="diff-add">+     for attempt in range(max_retries):</span>
+<span class="diff-add">+         try: return await pool.acquire()</span>
+<span class="diff-add">+         except DBError: await sleep(2 ** attempt)</span></pre>
+          </div>
+        </div>
+      </section>
+
+      <section id="ask-zen-action" class="spec-section">
+        <div class="section-title-bar">
+          <span class="section-num">11</span>
+          <h2 class="section-title">Inline "Ask Zen" Targeted Selection (Spec 4.4)</h2>
+        </div>
+        <div class="preview-box">
+          <div class="ask-zen-tooltip">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#bf8eff" stroke-width="2">
+              <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z"></path>
+            </svg>
+            <span style="font-weight: 600;">Ask Zen:</span>
+            <input type="text" placeholder="Refactor into async generator..." style="background: none; border: none; outline: none; color: var(--text-primary); font-size: 0.74rem; width: 200px;">
+            <button style="background: var(--accent-blue); border: none; width: 20px; height: 20px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; cursor: pointer;">&check;</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           6. HISTORY & ORGANIZATION (PLAN SEC. 5)
+           ========================================================================== -->
+      <section id="history-sidebar" class="spec-section">
+        <div class="section-title-bar">
+          <span class="section-num">12</span>
+          <h2 class="section-title">History Sidebar, Search & Pinned Chats (Spec 5.1, 5.2, 5.4)</h2>
+        </div>
+
+        <div class="cards-grid-2">
+          <div class="sidebar-mockup">
+            <div class="sidebar-search-box">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <span>Search chats & messages...</span>
+            </div>
+            
+            <!-- Pinned section -->
+            <div style="font-size: 0.68rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.05em;">PINNED</div>
+            <div class="pinned-item">
+              <span>Quantum Algorithm Paper</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M16 3H8v2l2 2v6l-3 4v1h10v-1l-3-4V7l2-2V3z"/></svg>
+            </div>
+
+            <!-- Project Workspace -->
+            <div style="font-size: 0.68rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.05em;">PROJECTS</div>
+            <div class="project-item">
+              <span style="width: 6px; height: 6px; border-radius: 50%; background: #9d5bf0;"></span>
+              <span>Q3 Strategy Deck</span>
+            </div>
+          </div>
+
+          <div class="specimen-card">
+            <div class="card-meta-title">Temporary Chat Mode Indicator (Spec 5.3)</div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <div class="temp-chat-badge">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h20"/><path d="M20 12v8H4v-8"/><path d="m4 12 4-8h8l4 8"/></svg>
+                <span>Temporary Chat Mode Active</span>
+              </div>
+              <p style="font-size: 0.78rem; color: var(--text-muted);">Conversations are ephemeral and automatically purged upon closing the tab. Never saved to history.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="share-export" class="spec-section">
+        <div class="section-title-bar">
+          <span class="section-num">13</span>
+          <h2 class="section-title">Shareable Link Modal & Data Export (Spec 5.5, 5.6)</h2>
+        </div>
+
+        <div class="cards-grid-2">
+          <div class="share-modal-mockup">
+            <div style="font-size: 0.85rem; font-weight: 600;">Share Conversation Snapshot</div>
+            <div class="share-link-input-row">
+              <input type="text" class="share-link-input" readonly value="https://zen.ai/share/c89f-4310-zen">
+              <button class="btn-copy-sm">Copy</button>
+            </div>
+            <div style="font-size: 0.72rem; color: var(--text-muted);">Viewers can read this snapshot or fork it directly into their account.</div>
+          </div>
+
+          <div class="specimen-card">
+            <div class="card-meta-title">Data Export Package</div>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span style="font-size: 0.8rem;">Transcripts (.json & .md)</span>
+              <button class="btn-copy-sm" style="background: rgba(255,255,255,0.06); border: 1px solid var(--border-subtle); color: var(--text-primary);">Export Archive</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+</body>
+</html>

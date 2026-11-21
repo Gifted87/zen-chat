@@ -1,0 +1,25 @@
+{
+  "name": "zen",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "highlight.js": "^11.12.0",
+    "marked": "^18.0.11",
+    "multer": "^2.3.0",
+    "sql.js": "^1.14.2",
+    "sqlite3": "^6.0.1"
+  }
+}

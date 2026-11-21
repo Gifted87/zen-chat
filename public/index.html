@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zen — Intelligent Conversational Workspace</title>
+  <meta name="description" content="Zen is an intelligent conversational AI workspace with real-time streaming, multimodal tools, vision understanding, and web search citations.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- highlight.js for Spec 2.2 Code Block syntax highlighting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css">
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+
+  <!-- marked.js for Spec 2.2 Markdown rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <!-- KaTeX for Spec 2.2 LaTeX Math rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Drag & Drop Viewport Overlay -->
+  <div id="drag-drop-overlay" class="drag-drop-overlay hidden">
+    <div class="drop-target-card">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#9d5bf0" stroke-width="1.8">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="17 8 12 3 7 8"/>
+        <line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+      <div style="font-size: 1.05rem; font-weight: 600;">Drop files or images here</div>
+      <div style="font-size: 0.8rem; color: var(--text-muted);">PDF, CSV, JSON, TXT, PNG, JPG, or Code files</div>
+    </div>
+  </div>
+
+  <div id="app" class="app-layout">
+
+    <!-- ─────────────────────────────────────────────
+         LEFT SIDEBAR — Conversations & Navigation
+         ───────────────────────────────────────────── -->
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-top">
+        <div class="sidebar-brand">
+          <div class="brand-orb" aria-hidden="true"></div>
+          <span class="brand-name">Zen</span>
+        </div>
+        <button id="btn-new-chat" class="btn-new-chat" title="New Chat (Ctrl+Shift+O)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+          <span>New Chat</span>
+        </button>
+      </div>
+
+      <div class="sidebar-search-wrap">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="sidebar-search" type="text" placeholder="Search conversations…" autocomplete="off">
+      </div>
+
+      <div id="conversations-list" class="conversations-list">
+        <!-- Injected by JS -->
+      </div>
+    </aside>
+
+    <!-- ─────────────────────────────────────────────
+         MAIN CHAT AREA
+         ───────────────────────────────────────────── -->
+    <main id="main" class="main">
+
+      <!-- Top Navigation Bar -->
+      <header class="top-nav">
+        <div class="nav-left">
+          <button id="btn-toggle-sidebar" class="icon-btn" title="Toggle Sidebar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
+          </button>
+
+          <!-- ─── Model Selector — Spec 2.1 ─── -->
+          <div class="model-dropdown-wrapper" id="model-dropdown-wrapper">
+            <button id="btn-model-selector" class="model-badge-btn" aria-haspopup="listbox" aria-expanded="false">
+              <span id="model-selector-icon" class="model-btn-icon"></span>
+              <span id="model-selector-name" class="model-btn-name">Deep thinking</span>
+              <span id="model-selector-tag" class="model-btn-tag">Zen-R1</span>
+              <svg class="chevron-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-9"/></svg>
+            </button>
+
+            <div id="model-dropdown" class="model-dropdown hidden" role="listbox" aria-label="Select Model">
+              <!-- Injected by JS from /api/models -->
+            </div>
+          </div>
+        </div>
+
+        <div class="nav-right">
+          <!-- Web Search Quick Status -->
+          <button id="btn-top-web-search" class="icon-toggle-btn" title="Toggle Live Web Search (Spec 3.1)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+            <span>Web Search</span>
+          </button>
+
+          <span id="streaming-indicator" class="streaming-indicator hidden">
+            <span class="stream-dot"></span>
+            Generating…
+          </span>
+        </div>
+      </header>
+
+      <!-- ─── Chat Thread ─── -->
+      <div id="thread-container" class="thread-container">
+
+        <!-- Zero State -->
+        <div id="zero-state" class="zero-state">
+          <div class="hero-glow-orb" aria-hidden="true"></div>
+          <h1 class="hero-title">Zen</h1>
+          <p class="hero-sub">What would you like to explore or analyze today?</p>
+          <div class="suggestion-chips" role="list">
+            <button class="chip" role="listitem" data-prompt="Search the live web for the latest developments in quantum search algorithms and summarize with citations.">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+              Search quantum algorithms with citations
+            </button>
+            <button class="chip" role="listitem" data-prompt="Write a Python function that sorts a million items using Timsort and benchmark it against quicksort.">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              Timsort vs Quicksort benchmark
+            </button>
+            <button class="chip" role="listitem" data-prompt="Explain the mathematics of transformer attention mechanisms with LaTeX equations.">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+              Transformer attention math
+            </button>
+            <button class="chip" role="listitem" data-prompt="Analyze the uploaded data file, extract key distribution metrics, and generate an analysis summary.">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              Ingest & analyze uploaded file
+            </button>
+          </div>
+        </div>
+
+        <!-- Active Messages -->
+        <div id="messages" class="messages hidden" role="log" aria-live="polite" aria-label="Conversation"></div>
+      </div>
+
+      <!-- ─── Floating Prompt Capsule — Spec 2.1 – 3.3 ─── -->
+      <div class="capsule-wrapper">
+        
+        <!-- Web Search Active Pill (Spec 3.1) -->
+        <div id="web-search-banner" class="web-search-banner hidden">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+          <span>Web Search Enabled</span>
+          <button id="btn-close-search-banner" class="btn-banner-close" title="Disable search">&times;</button>
+        </div>
+
+        <!-- Attached Files & Images Preview Tray (Spec 3.2, 3.3) -->
+        <div id="attachment-tray" class="attachment-tray hidden"></div>
+
+        <div class="capsule-outer-glow" id="prompt-capsule">
+          <div class="capsule-inner">
+
+            <textarea
+              id="prompt-input"
+              class="prompt-textarea"
+              placeholder="How can I help you?"
+              rows="1"
+              aria-label="Message input"
+              autocomplete="off"
+              spellcheck="false"
+            ></textarea>
+
+            <div class="capsule-bottom-row">
+              <div class="capsule-left-tools">
+                <!-- Attach button (Spec 3.2 & 3.3) -->
+                <button class="pill-btn" id="btn-attach" type="button" title="Attach files or images (PDF, CSV, PNG, JPG, Code)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/>
+                    <path d="M12 12v9"/>
+                    <path d="m8 16 4-4 4 4"/>
+                  </svg>
+                  <span>Attach files</span>
+                </button>
+                <input type="file" id="file-upload-input" multiple accept=".pdf,.doc,.docx,.txt,.csv,.json,.png,.jpg,.jpeg,.webp,.py,.js,.ts,.html,.css" class="hidden">
+
+                <!-- Inline model quick-switch pill — Spec 2.1 -->
+                <button class="pill-btn model-quick-pill" id="btn-capsule-model" type="button" title="Switch model">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
+                    <path d="M2 12h20"/>
+                  </svg>
+                  <span id="capsule-model-label">Deep thinking</span>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-9"/></svg>
+                </button>
+
+                <!-- Web Search Toggle Icon Button inside Capsule (Spec 3.1) -->
+                <button class="capsule-icon-btn" id="btn-capsule-web-search" type="button" title="Toggle Live Web Search">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
+                    <path d="M2 12h20"/>
+                  </svg>
+                </button>
+              </div>
+
+              <div class="capsule-right-tools">
+                <!-- Send Button -->
+                <button id="btn-send" class="send-btn" type="button" aria-label="Send message">
+                  <svg id="icon-send" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"/>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                  </svg>
+                  <svg id="icon-stop" class="hidden" width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                    <rect x="4" y="4" width="16" height="16" rx="2"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <p class="capsule-footer-note">Zen can make mistakes. Verify critical information.</p>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Image Lightbox Modal (Spec 3.3) -->
+  <div id="image-lightbox" class="lightbox-backdrop hidden">
+    <div class="lightbox-dialog">
+      <button id="btn-close-lightbox" class="lightbox-close-btn" aria-label="Close image">&times;</button>
+      <img id="lightbox-img" src="" alt="Enlarged vision inspection">
+      <div id="lightbox-caption" class="lightbox-caption"></div>
+    </div>
+  </div>
+
+  <!-- Toast container -->
+  <div id="toast-container" class="toast-container" aria-live="assertive" aria-atomic="true"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
